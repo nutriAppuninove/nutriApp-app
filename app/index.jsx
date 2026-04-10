@@ -5,7 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
@@ -21,61 +20,78 @@ export default function Home() {
 
   const handleAnalisar = () => {
     console.log(form);
-    // sua lógica aqui
   };
 
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
+
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <ScrollView contentContainerStyle={styles.container}>
-          <Text style={styles.title}>Dados Nutricionais</Text>
+        <View style={styles.container}>
+          {/* HEADER */}
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>NutriApp</Text>
+          </View>
 
-          <Text style={styles.label}>Peso (kg)</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Ex: 75.5"
-            keyboardType="numeric"
-            value={form.peso}
-            onChangeText={(v) => setForm({ ...form, peso: v })}
-          />
+          {/* BLOCO VERDE */}
+          <View style={styles.topSection}>
+            <Text style={styles.topText}>
+              Ajudamos você a atingir seus objetivos corporais com base nos seus
+              dados.
+            </Text>
+          </View>
 
-          <Text style={styles.label}>Altura (m)</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Ex: 1.75"
-            keyboardType="numeric"
-            value={form.altura}
-            onChangeText={(v) => setForm({ ...form, altura: v })}
-          />
+          {/* CARD */}
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Seus dados</Text>
 
-          <Text style={styles.label}>Idade</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Ex: 25"
-            keyboardType="numeric"
-            value={form.idade}
-            onChangeText={(v) => setForm({ ...form, idade: v })}
-          />
+            <Text style={styles.label}>Peso (kg)</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ex: 75.5"
+              keyboardType="numeric"
+              value={form.peso}
+              onChangeText={(v) => setForm({ ...form, peso: v })}
+            />
 
-          <Text style={styles.label}>
-            Frequência de Exercícios (por semana)
-          </Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Ex: 3"
-            keyboardType="numeric"
-            value={form.frequencia}
-            onChangeText={(v) => setForm({ ...form, frequencia: v })}
-          />
+            <Text style={styles.label}>Altura (m)</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ex: 1.75"
+              keyboardType="numeric"
+              value={form.altura}
+              onChangeText={(v) => setForm({ ...form, altura: v })}
+            />
 
-          <TouchableOpacity style={styles.button} onPress={handleAnalisar}>
-            <Text style={styles.buttonText}>Analisar Condição Física</Text>
-          </TouchableOpacity>
-        </ScrollView>
+            <Text style={styles.label}>Idade</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ex: 25"
+              keyboardType="numeric"
+              value={form.idade}
+              onChangeText={(v) => setForm({ ...form, idade: v })}
+            />
+
+            <Text style={styles.label}>Frequência</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Ex: 3"
+              keyboardType="numeric"
+              value={form.frequencia}
+              onChangeText={(v) => setForm({ ...form, frequencia: v })}
+            />
+
+            <TouchableOpacity style={styles.button} onPress={handleAnalisar}>
+              <Text style={styles.buttonText}>Analisar</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* RESULTADO */}
+          <Text style={styles.resultado}>resultado</Text>
+        </View>
       </KeyboardAvoidingView>
     </>
   );
@@ -83,43 +99,79 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    backgroundColor: "#fff",
-    flexGrow: 1,
+    flex: 1,
+    backgroundColor: "#f2f2f2",
   },
-  title: {
-    fontSize: 22,
-    fontWeight: "500",
-    color: "#2d8a4e",
-    textAlign: "center",
-    marginBottom: 28,
-    marginTop: 16,
-  },
-  label: {
-    fontSize: 13,
-    color: "#888",
-    marginBottom: 6,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 10,
-    padding: 12,
-    fontSize: 15,
-    marginBottom: 16,
-    backgroundColor: "#fafafa",
-    color: "#111",
-  },
-  button: {
-    backgroundColor: "#2d8a4e",
-    borderRadius: 12,
-    padding: 16,
+
+  header: {
+    paddingTop: 50,
+    paddingBottom: 12,
     alignItems: "center",
-    marginTop: 8,
+    backgroundColor: "#fff",
   },
-  buttonText: {
+
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "600",
+  },
+
+  topSection: {
+    backgroundColor: "#4f6f6a",
+    padding: 16,
+    height: 110,
+    justifyContent: "center",
+  },
+
+  topText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "500",
+  },
+
+  card: {
+    backgroundColor: "#6f9188",
+    marginHorizontal: 16,
+    borderRadius: 20,
+    padding: 16,
+    marginTop: -40,
+  },
+
+  cardTitle: {
+    color: "#fff",
+    fontSize: 16,
+    marginBottom: 12,
+    textAlign: "center",
+  },
+
+  label: {
+    color: "#eaeaea",
+    marginBottom: 4,
+    fontSize: 12,
+  },
+
+  input: {
+    backgroundColor: "#ffffffcc",
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 10,
+  },
+
+  button: {
+    backgroundColor: "#2d8a4e",
+    padding: 12,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 6,
+  },
+
+  buttonText: {
+    color: "#fff",
+    fontWeight: "500",
+  },
+
+  resultado: {
+    textAlign: "center",
+    marginTop: 12,
+    color: "#555",
   },
 });
