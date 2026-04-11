@@ -6,7 +6,6 @@ import { Stack } from "expo-router";
 export default function Splash() {
   const router = useRouter();
 
-  // Animation values
   const logoScale = useRef(new Animated.Value(0.6)).current;
   const logoOpacity = useRef(new Animated.Value(0)).current;
   const taglineOpacity = useRef(new Animated.Value(0)).current;
@@ -14,7 +13,6 @@ export default function Splash() {
   const exitOpacity = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    // 1. Animate logo in
     Animated.parallel([
       Animated.timing(logoScale, {
         toValue: 1,
@@ -28,7 +26,6 @@ export default function Splash() {
         useNativeDriver: true,
       }),
     ]).start(() => {
-      // 2. Animate tagline in after logo
       Animated.parallel([
         Animated.timing(taglineOpacity, {
           toValue: 1,
@@ -42,7 +39,6 @@ export default function Splash() {
           useNativeDriver: true,
         }),
       ]).start(() => {
-        // 3. Hold for a moment, then fade out and navigate
         setTimeout(() => {
           Animated.timing(exitOpacity, {
             toValue: 0,
@@ -61,11 +57,9 @@ export default function Splash() {
       <Stack.Screen options={{ headerShown: false }} />
 
       <Animated.View style={[styles.container, { opacity: exitOpacity }]}>
-        {/* Background decorative circles */}
         <View style={styles.circleTopRight} />
         <View style={styles.circleBottomLeft} />
 
-        {/* Logo block */}
         <Animated.View
           style={[
             styles.logoWrapper,
@@ -77,11 +71,9 @@ export default function Splash() {
             <Text style={styles.iconEmoji}>🥗</Text>
           </View>
 
-          {/* App name */}
           <Text style={styles.appName}>NutriApp</Text>
         </Animated.View>
 
-        {/* Tagline */}
         <Animated.Text
           style={[
             styles.tagline,
@@ -94,7 +86,6 @@ export default function Splash() {
           Seu guia de nutrição pessoal
         </Animated.Text>
 
-        {/* Bottom label */}
         <Animated.Text style={[styles.version, { opacity: taglineOpacity }]}>
           v1.0
         </Animated.Text>
@@ -111,7 +102,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  // Decorative background shapes
   circleTopRight: {
     position: "absolute",
     top: -60,
