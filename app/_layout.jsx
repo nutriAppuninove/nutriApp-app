@@ -2,6 +2,7 @@ import { Slot, usePathname } from "expo-router";
 import { View, StyleSheet } from "react-native";
 import Rodape from "../components/Rodape";
 import { AuthProvider } from "./context/AuthContext";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const HIDE_RODAPE_PATHS = ["/", "/login", "/register"];
 
@@ -11,12 +12,14 @@ export default function Layout() {
 
   return (
     <AuthProvider>
-      <View style={styles.container}>
-        <View style={styles.content}>
-          <Slot />
+      <SafeAreaProvider>
+        <View style={styles.container}>
+          <View style={styles.content}>
+            <Slot />
+          </View>
+          {!hideRodape && <Rodape />}
         </View>
-        {!hideRodape && <Rodape />}
-      </View>
+      </SafeAreaProvider>
     </AuthProvider>
   );
 }

@@ -3,15 +3,17 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter, usePathname } from "expo-router";
 import { styles } from "../app/style/rodape.style";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Rodape() {
   const router = useRouter();
   const pathname = usePathname();
+  const insets = useSafeAreaInsets();
 
   const isActive = (route) => pathname === route;
 
   return (
-    <View style={styles.footer}>
+    <View style={[styles.footer, { paddingBottom: insets.bottom }]}>
       {/* Início */}
       <TouchableOpacity
         style={styles.tabItem}

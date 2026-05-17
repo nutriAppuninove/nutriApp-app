@@ -4,11 +4,10 @@ export const styles = StyleSheet.create({
   footer: {
     flexDirection: "row",
     backgroundColor: "#3d5a4e",
-    height: Platform.OS === "ios" ? 85 : 65,
+    minHeight: Platform.OS === "ios" ? 85 : 65,
     justifyContent: "space-around",
     alignItems: "center",
     width: "100%",
-    paddingBottom: Platform.OS === "ios" ? 20 : 0,
 
     borderTopWidth: 0.5,
     borderTopColor: "rgba(255,255,255,0.2)",
