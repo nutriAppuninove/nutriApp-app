@@ -13,10 +13,7 @@ import { Stack, useRouter } from "expo-router";
 import { styles } from "./style/home.style";
 import { useAuth } from "./context/AuthContext";
 
-const API_URL = Platform.select({
-  android: "http://10.0.2.2:3001/api",
-  default: "http://localhost:3001/api",
-});
+const API_URL = "http://100.68.161.45:3001/api";
 
 export default function Home() {
   const router = useRouter();
@@ -32,18 +29,39 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState(null);
 
+  const parseNum = (val) => {
+    const normalizado = String(val).replace(",", ".");
+    const n = Number(normalizado);
+    return isNaN(n) ? null : n;
+  };
+
   const handleAnalisar = async () => {
     setLoading(true);
     setErro(null);
     setResultado(null);
 
     try {
+      const peso = parseNum(form.peso);
+      const altura = parseNum(form.altura);
+      const idade = parseNum(form.idade);
+      const frequencia = parseNum(form.frequencia);
+
+      if (!peso || !altura || !idade) {
+        setErro("Preencha peso, altura e idade corretamente.");
+        return;
+      }
+
+      console.log("[home] user ao analisar:", user);
+
       const payload = {
-        peso: Number(form.peso),
-        altura: Number(form.altura),
-        idade: Number(form.idade),
-        frequencia: Number(form.frequencia),
+        peso,
+        altura,
+        idade,
+        frequencia,
+        ...(user?.id ? { userId: user.id } : {}),
       };
+
+      console.log("[home] payload enviado:", payload);
 
       const postRes = await fetch(`${API_URL}/insert/post`, {
         method: "POST",
@@ -90,10 +108,7 @@ export default function Home() {
                   <Text style={styles.headerUser} numberOfLines={1}>
                     Olá, {user.nome}
                   </Text>
-                  <TouchableOpacity
-                    onPress={logout}
-                    style={styles.headerLink}
-                  >
+                  <TouchableOpacity onPress={logout} style={styles.headerLink}>
                     <Text style={styles.headerLinkText}>Sair</Text>
                   </TouchableOpacity>
                 </>

@@ -34,7 +34,7 @@ export default function Rodape() {
       <TouchableOpacity
         style={styles.tabItem}
         activeOpacity={0.7}
-        onPress={() => router.push("/historico")}
+        onPress={() => router.push("/history")}
       >
         <Ionicons
           name={isActive("/historico") ? "time" : "time-outline"}

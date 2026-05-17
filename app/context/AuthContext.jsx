@@ -1,11 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { Platform } from "react-native";
 
-const API_URL = Platform.select({
-  android: "http://10.0.2.2:3001/api",
-  default: "http://localhost:3001/api",
-});
-
+const API_URL = "http://100.68.161.45:3001/api";
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
