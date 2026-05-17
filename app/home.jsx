@@ -12,8 +12,7 @@ import {
 import { Stack, useRouter } from "expo-router";
 import { styles } from "./style/home.style";
 import { useAuth } from "./context/AuthContext";
-
-const API_URL = "http://100.68.161.45:3001/api";
+import { API_URL } from "./constants/env";
 
 export default function Home() {
   const router = useRouter();

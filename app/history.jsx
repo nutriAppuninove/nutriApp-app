@@ -10,8 +10,7 @@ import {
 } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { useAuth } from "./context/AuthContext";
-
-const API_URL = "http://100.68.161.45:3001/api";
+import { API_URL } from "./constants/env";
 
 const calcularIMC = (peso, altura) => {
   if (!peso || !altura) return null;

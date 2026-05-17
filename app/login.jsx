@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
 import { Stack, useRouter } from "expo-router";
 import { useAuth } from "./context/AuthContext";
 import { styles } from "./style/auth.style";
+import { API_URL } from "./constants/env";
 
 export default function Login() {
   const router = useRouter();
@@ -20,6 +21,13 @@ export default function Login() {
   const [senha, setSenha] = useState("");
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState(null);
+
+  useEffect(() => {
+    fetch(`${API_URL}/health`)
+      .then((res) => res.json())
+      .then((data) => console.log("API health:", data))
+      .catch((err) => console.error("API unreachable:", err));
+  }, []);
 
   const handleLogin = async () => {
     setErro(null);
