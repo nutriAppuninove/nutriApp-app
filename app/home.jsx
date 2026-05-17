@@ -4,22 +4,71 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
+  ScrollView,
 } from "react-native";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
+import { styles } from "./style/home.style";
+import { useAuth } from "./context/AuthContext";
+
+const API_URL = Platform.select({
+  android: "http://10.0.2.2:3001/api",
+  default: "http://localhost:3001/api",
+});
 
 export default function Home() {
+  const router = useRouter();
+  const { user, logout } = useAuth();
+
   const [form, setForm] = useState({
     peso: "",
     altura: "",
     idade: "",
     frequencia: "",
   });
+  const [resultado, setResultado] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [erro, setErro] = useState(null);
 
-  const handleAnalisar = () => {
-    console.log(form);
+  const handleAnalisar = async () => {
+    setLoading(true);
+    setErro(null);
+    setResultado(null);
+
+    try {
+      const payload = {
+        peso: Number(form.peso),
+        altura: Number(form.altura),
+        idade: Number(form.idade),
+        frequencia: Number(form.frequencia),
+      };
+
+      const postRes = await fetch(`${API_URL}/insert/post`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!postRes.ok) {
+        const err = await postRes.json().catch(() => ({}));
+        throw new Error(err.message || "Falha ao enviar os dados");
+      }
+
+      const getRes = await fetch(`${API_URL}/result/get`);
+      if (!getRes.ok) {
+        const err = await getRes.json().catch(() => ({}));
+        throw new Error(err.message || "Falha ao obter o resultado");
+      }
+
+      const data = await getRes.json();
+      setResultado(data);
+    } catch (e) {
+      setErro(e.message || "Erro inesperado");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -34,6 +83,44 @@ export default function Home() {
           {/* HEADER */}
           <View style={styles.header}>
             <Text style={styles.headerTitle}>NutriApp</Text>
+
+            <View style={styles.headerActions}>
+              {user ? (
+                <>
+                  <Text style={styles.headerUser} numberOfLines={1}>
+                    Olá, {user.nome}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={logout}
+                    style={styles.headerLink}
+                  >
+                    <Text style={styles.headerLinkText}>Sair</Text>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <>
+                  <TouchableOpacity
+                    onPress={() => router.push("/login")}
+                    style={styles.headerLink}
+                  >
+                    <Text style={styles.headerLinkText}>Entrar</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => router.push("/register")}
+                    style={[styles.headerLink, styles.headerLinkPrimary]}
+                  >
+                    <Text
+                      style={[
+                        styles.headerLinkText,
+                        styles.headerLinkTextPrimary,
+                      ]}
+                    >
+                      Criar conta
+                    </Text>
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
           </View>
 
           {/* BLOCO VERDE */}
@@ -44,134 +131,102 @@ export default function Home() {
             </Text>
           </View>
 
-          {/* CARD */}
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Seus dados</Text>
+          <ScrollView
+            style={styles.scroll}
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            {/* CARD */}
+            <View style={styles.card}>
+              <Text style={styles.cardTitle}>Seus dados</Text>
 
-            <Text style={styles.label}>Peso (kg)</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Ex: 75.5"
-              keyboardType="numeric"
-              value={form.peso}
-              onChangeText={(v) => setForm({ ...form, peso: v })}
-            />
+              <View style={styles.row}>
+                <View style={styles.col}>
+                  <Text style={styles.label}>Peso (kg)</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Ex: 75.5"
+                    keyboardType="numeric"
+                    value={form.peso}
+                    onChangeText={(v) => setForm({ ...form, peso: v })}
+                  />
+                </View>
+                <View style={styles.col}>
+                  <Text style={styles.label}>Altura (m)</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Ex: 1.75"
+                    keyboardType="numeric"
+                    value={form.altura}
+                    onChangeText={(v) => setForm({ ...form, altura: v })}
+                  />
+                </View>
+              </View>
 
-            <Text style={styles.label}>Altura (m)</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Ex: 1.75"
-              keyboardType="numeric"
-              value={form.altura}
-              onChangeText={(v) => setForm({ ...form, altura: v })}
-            />
+              <View style={styles.row}>
+                <View style={styles.col}>
+                  <Text style={styles.label}>Idade</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Ex: 25"
+                    keyboardType="numeric"
+                    value={form.idade}
+                    onChangeText={(v) => setForm({ ...form, idade: v })}
+                  />
+                </View>
+                <View style={styles.col}>
+                  <Text style={styles.label}>Frequência</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Ex: 3"
+                    keyboardType="numeric"
+                    value={form.frequencia}
+                    onChangeText={(v) => setForm({ ...form, frequencia: v })}
+                  />
+                </View>
+              </View>
 
-            <Text style={styles.label}>Idade</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Ex: 25"
-              keyboardType="numeric"
-              value={form.idade}
-              onChangeText={(v) => setForm({ ...form, idade: v })}
-            />
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleAnalisar}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.buttonText}>Analisar</Text>
+                )}
+              </TouchableOpacity>
+            </View>
 
-            <Text style={styles.label}>Frequência</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Ex: 3"
-              keyboardType="numeric"
-              value={form.frequencia}
-              onChangeText={(v) => setForm({ ...form, frequencia: v })}
-            />
+            {/* RESULTADO */}
+            {erro && (
+              <Text style={[styles.resultado, { color: "#c0392b" }]}>
+                {erro}
+              </Text>
+            )}
 
-            <TouchableOpacity style={styles.button} onPress={handleAnalisar}>
-              <Text style={styles.buttonText}>Analisar</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* RESULTADO */}
-          <Text style={styles.resultado}>resultado</Text>
+            {resultado && (
+              <View style={styles.resultadoBox}>
+                <Text style={styles.resultadoTitulo}>Resultado</Text>
+                <Text style={styles.resultadoLinha}>
+                  IMC:{" "}
+                  <Text style={styles.resultadoValor}>
+                    {resultado.imc.valor}
+                  </Text>
+                </Text>
+                <Text style={styles.resultadoLinha}>
+                  Classificação:{" "}
+                  <Text style={styles.resultadoValor}>
+                    {resultado.imc.classificacao}
+                  </Text>
+                </Text>
+              </View>
+            )}
+          </ScrollView>
         </View>
       </KeyboardAvoidingView>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f2f2f2",
-  },
-
-  header: {
-    paddingTop: 50,
-    paddingBottom: 12,
-    alignItems: "center",
-    backgroundColor: "#fff",
-  },
-
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: "600",
-  },
-
-  topSection: {
-    backgroundColor: "#4f6f6a",
-    padding: 16,
-    height: 110,
-    justifyContent: "center",
-  },
-
-  topText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "500",
-  },
-
-  card: {
-    backgroundColor: "#6f9188",
-    marginHorizontal: 16,
-    borderRadius: 20,
-    padding: 16,
-    marginTop: -40,
-  },
-
-  cardTitle: {
-    color: "#fff",
-    fontSize: 16,
-    marginBottom: 12,
-    textAlign: "center",
-  },
-
-  label: {
-    color: "#eaeaea",
-    marginBottom: 4,
-    fontSize: 12,
-  },
-
-  input: {
-    backgroundColor: "#ffffffcc",
-    borderRadius: 8,
-    padding: 8,
-    marginBottom: 10,
-  },
-
-  button: {
-    backgroundColor: "#2d8a4e",
-    padding: 12,
-    borderRadius: 10,
-    alignItems: "center",
-    marginTop: 6,
-  },
-
-  buttonText: {
-    color: "#fff",
-    fontWeight: "500",
-  },
-
-  resultado: {
-    textAlign: "center",
-    marginTop: 12,
-    color: "#555",
-  },
-});
