@@ -12,6 +12,7 @@ import { Stack, useRouter } from "expo-router";
 import { useAuth } from "./context/AuthContext";
 import { styles } from "./style/auth.style";
 import { API_URL } from "./constants/env";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Login() {
   const router = useRouter();
@@ -21,18 +22,46 @@ export default function Login() {
   const [senha, setSenha] = useState("");
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState(null);
+  const [showSenha, setShowSenha] = useState(false);
+
+  const VALID_DOMAINS = [
+    "gmail.com",
+    "yahoo.com",
+    "hotmail.com",
+    "outlook.com",
+    "icloud.com",
+  ];
+
+  const [emailErro, setEmailErro] = useState(null);
 
   useEffect(() => {
-    fetch(`${API_URL}/health`)
-      .then((res) => res.json())
-      .then((data) => console.log("API health:", data))
-      .catch((err) => console.error("API unreachable:", err));
-  }, []);
+    if (!email) {
+      setEmailErro(null);
+      return;
+    }
+
+    const parts = email.trim().split("@");
+    if (parts.length !== 2 || !parts[1]) {
+      setEmailErro(null);
+      return;
+    }
+
+    const domain = parts[1].toLowerCase();
+    if (!VALID_DOMAINS.includes(domain)) {
+      setEmailErro("Domínio de email inválido");
+    } else {
+      setEmailErro(null);
+    }
+  }, [email]);
 
   const handleLogin = async () => {
     setErro(null);
     setLoading(true);
     try {
+      if (emailErro || !email) {
+        setErro("Informe um email válido");
+        return;
+      }
       await login(email.trim(), senha);
       router.replace("/home");
     } catch (e) {
@@ -65,7 +94,7 @@ export default function Login() {
           <View style={styles.card}>
             <Text style={styles.label}>Email</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, emailErro && { borderColor: "#ef4444" }]}
               placeholder="seu@email.com"
               keyboardType="email-address"
               autoCapitalize="none"
@@ -73,15 +102,28 @@ export default function Login() {
               value={email}
               onChangeText={setEmail}
             />
+            {emailErro && <Text style={styles.erro}>{emailErro}</Text>}
 
             <Text style={styles.label}>Senha</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="••••••••"
-              secureTextEntry
-              value={senha}
-              onChangeText={setSenha}
-            />
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.inputFlex}
+                placeholder="••••••••"
+                secureTextEntry={!showSenha}
+                value={senha}
+                onChangeText={setSenha}
+              />
+              <TouchableOpacity
+                onPress={() => setShowSenha(!showSenha)}
+                style={{ padding: 4 }}
+              >
+                <Ionicons
+                  name={showSenha ? "eye-off-outline" : "eye-outline"}
+                  size={20}
+                  color="#888"
+                />
+              </TouchableOpacity>
+            </View>
 
             {erro && <Text style={styles.erro}>{erro}</Text>}
 

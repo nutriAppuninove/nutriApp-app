@@ -69,7 +69,7 @@ export default function Register() {
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
-            <View style={styles.card}>
+            <View style={[styles.card, { marginTop: 16 }]}>
               <Text style={styles.label}>Nome</Text>
               <TextInput
                 style={styles.input}
