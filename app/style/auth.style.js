@@ -6,6 +6,22 @@ export const styles = StyleSheet.create({
     backgroundColor: "#f2f2f2",
   },
 
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    marginBottom: 16,
+    backgroundColor: "#fff",
+  },
+  inputFlex: {
+    flex: 1,
+    paddingVertical: 12,
+    fontSize: 15,
+  },
+
   header: {
     paddingTop: 40,
     paddingBottom: 8,
@@ -53,7 +69,7 @@ export const styles = StyleSheet.create({
   },
 
   input: {
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#0000",
     borderRadius: 8,
     paddingHorizontal: 10,
     paddingVertical: 8,
