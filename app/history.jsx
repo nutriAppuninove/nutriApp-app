@@ -6,12 +6,11 @@ import {
   StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
-  Platform,
 } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { useAuth } from "./context/AuthContext";
-
-const API_URL = "http://100.68.161.45:3001/api";
+import { API_URL } from "./constants/env";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const calcularIMC = (peso, altura) => {
   if (!peso || !altura) return null;
@@ -30,6 +29,7 @@ const classificarIMC = (imc) => {
 export default function HistoricoScreen() {
   const router = useRouter();
   const { user } = useAuth();
+  const insets = useSafeAreaInsets();
 
   const [historico, setHistorico] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -54,12 +54,19 @@ export default function HistoricoScreen() {
     carregar();
   }, [user]);
 
+  const headerStyle = {
+    backgroundColor: "#00856F",
+    paddingTop: insets.top + 16,
+    paddingBottom: 24,
+    paddingHorizontal: 22,
+  };
+
   if (!user) {
     return (
       <>
         <Stack.Screen options={{ headerShown: false }} />
         <View style={styles.container}>
-          <View style={styles.header}>
+          <View style={headerStyle}>
             <Text style={styles.headerTitle}>Histórico</Text>
           </View>
           <View style={styles.guestBox}>
@@ -90,7 +97,7 @@ export default function HistoricoScreen() {
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.container}>
-        <View style={styles.header}>
+        <View style={headerStyle}>
           <Text style={styles.headerTitle}>Histórico</Text>
         </View>
 
@@ -161,12 +168,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F4F6F4",
-  },
-  header: {
-    backgroundColor: "#00856F",
-    paddingTop: 52,
-    paddingBottom: 24,
-    paddingHorizontal: 22,
   },
   headerTitle: {
     color: "#FFFFFF",

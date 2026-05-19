@@ -5,7 +5,16 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f2f2f2",
   },
-
+  inputError: {
+    borderColor: "#ef4444",
+    borderWidth: 1,
+  },
+  erroInput: {
+    fontSize: 12,
+    color: "#ef4444",
+    marginTop: 2,
+    marginBottom: 4,
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,12 +8,12 @@ import {
   Platform,
   ActivityIndicator,
   ScrollView,
+  StyleSheet,
 } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { styles } from "./style/home.style";
 import { useAuth } from "./context/AuthContext";
-
-const API_URL = "http://100.68.161.45:3001/api";
+import { API_URL } from "./constants/env";
 
 export default function Home() {
   const router = useRouter();
@@ -28,6 +28,50 @@ export default function Home() {
   const [resultado, setResultado] = useState(null);
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState(null);
+  const [inputErros, setInputErros] = useState({});
+
+  useEffect(() => {
+    const erros = {};
+
+    const validar = (valor, campo) => {
+      if (!valor) return;
+
+      const normalizado = String(valor).replace(",", ".");
+      const n = Number(normalizado);
+
+      if (isNaN(n) || n <= 0) {
+        erros[campo] = "Valor inválido";
+        return;
+      }
+
+      if (campo === "altura" && (n < 0.5 || n > 2.5)) {
+        erros[campo] = "Altura entre 0,5 e 2,5 m";
+        return;
+      }
+
+      if (campo === "peso" && (n < 10 || n > 300)) {
+        erros[campo] = "Peso entre 10 e 300 kg";
+        return;
+      }
+
+      if (campo === "idade" && (n < 1 || n > 120)) {
+        erros[campo] = "Idade entre 1 e 120 anos";
+        return;
+      }
+
+      if (campo === "frequencia" && (n < 1 || n > 7)) {
+        erros[campo] = "Frequência entre 1 e 7 dias";
+        return;
+      }
+    };
+
+    validar(form.peso, "peso");
+    validar(form.altura, "altura");
+    validar(form.idade, "idade");
+    validar(form.frequencia, "frequencia");
+
+    setInputErros(erros);
+  }, [form]);
 
   const parseNum = (val) => {
     const normalizado = String(val).replace(",", ".");
@@ -36,23 +80,27 @@ export default function Home() {
   };
 
   const handleAnalisar = async () => {
-    setLoading(true);
     setErro(null);
     setResultado(null);
 
+    if (Object.values(inputErros).some(Boolean)) {
+      setErro("Corrija os campos inválidos antes de continuar.");
+      return;
+    }
+
+    const peso = parseNum(form.peso);
+    const altura = parseNum(form.altura);
+    const idade = parseNum(form.idade);
+    const frequencia = parseNum(form.frequencia);
+
+    if (!peso || !altura || !idade) {
+      setErro("Preencha peso, altura e idade corretamente.");
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      const peso = parseNum(form.peso);
-      const altura = parseNum(form.altura);
-      const idade = parseNum(form.idade);
-      const frequencia = parseNum(form.frequencia);
-
-      if (!peso || !altura || !idade) {
-        setErro("Preencha peso, altura e idade corretamente.");
-        return;
-      }
-
-      console.log("[home] user ao analisar:", user);
-
       const payload = {
         peso,
         altura,
@@ -60,8 +108,6 @@ export default function Home() {
         frequencia,
         ...(user?.id ? { userId: user.id } : {}),
       };
-
-      console.log("[home] payload enviado:", payload);
 
       const postRes = await fetch(`${API_URL}/insert/post`, {
         method: "POST",
@@ -98,10 +144,8 @@ export default function Home() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.container}>
-          {/* HEADER */}
           <View style={styles.header}>
             <Text style={styles.headerTitle}>NutriApp</Text>
-
             <View style={styles.headerActions}>
               {user ? (
                 <>
@@ -138,7 +182,6 @@ export default function Home() {
             </View>
           </View>
 
-          {/* BLOCO VERDE */}
           <View style={styles.topSection}>
             <Text style={styles.topText}>
               Ajudamos você a atingir seus objetivos corporais com base nos seus
@@ -152,7 +195,6 @@ export default function Home() {
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
-            {/* CARD */}
             <View style={styles.card}>
               <Text style={styles.cardTitle}>Seus dados</Text>
 
@@ -160,22 +202,36 @@ export default function Home() {
                 <View style={styles.col}>
                   <Text style={styles.label}>Peso (kg)</Text>
                   <TextInput
-                    style={styles.input}
+                    style={[
+                      styles.input,
+                      inputErros.peso && localStyles.inputError,
+                    ]}
                     placeholder="Ex: 75.5"
                     keyboardType="numeric"
                     value={form.peso}
                     onChangeText={(v) => setForm({ ...form, peso: v })}
                   />
+                  {inputErros.peso && (
+                    <Text style={localStyles.erroInput}>{inputErros.peso}</Text>
+                  )}
                 </View>
                 <View style={styles.col}>
                   <Text style={styles.label}>Altura (m)</Text>
                   <TextInput
-                    style={styles.input}
+                    style={[
+                      styles.input,
+                      inputErros.altura && localStyles.inputError,
+                    ]}
                     placeholder="Ex: 1.75"
                     keyboardType="numeric"
                     value={form.altura}
                     onChangeText={(v) => setForm({ ...form, altura: v })}
                   />
+                  {inputErros.altura && (
+                    <Text style={localStyles.erroInput}>
+                      {inputErros.altura}
+                    </Text>
+                  )}
                 </View>
               </View>
 
@@ -183,22 +239,38 @@ export default function Home() {
                 <View style={styles.col}>
                   <Text style={styles.label}>Idade</Text>
                   <TextInput
-                    style={styles.input}
+                    style={[
+                      styles.input,
+                      inputErros.idade && localStyles.inputError,
+                    ]}
                     placeholder="Ex: 25"
                     keyboardType="numeric"
                     value={form.idade}
                     onChangeText={(v) => setForm({ ...form, idade: v })}
                   />
+                  {inputErros.idade && (
+                    <Text style={localStyles.erroInput}>
+                      {inputErros.idade}
+                    </Text>
+                  )}
                 </View>
                 <View style={styles.col}>
                   <Text style={styles.label}>Frequência</Text>
                   <TextInput
-                    style={styles.input}
+                    style={[
+                      styles.input,
+                      inputErros.frequencia && localStyles.inputError,
+                    ]}
                     placeholder="Ex: 3"
                     keyboardType="numeric"
                     value={form.frequencia}
                     onChangeText={(v) => setForm({ ...form, frequencia: v })}
                   />
+                  {inputErros.frequencia && (
+                    <Text style={localStyles.erroInput}>
+                      {inputErros.frequencia}
+                    </Text>
+                  )}
                 </View>
               </View>
 
@@ -215,7 +287,6 @@ export default function Home() {
               </TouchableOpacity>
             </View>
 
-            {/* RESULTADO */}
             {erro && (
               <Text style={[styles.resultado, { color: "#c0392b" }]}>
                 {erro}
