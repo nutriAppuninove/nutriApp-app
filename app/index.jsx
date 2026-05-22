@@ -86,6 +86,12 @@ export default function Splash() {
           Seu guia de nutrição pessoal
         </Animated.Text>
 
+        <Animated.Text
+          style={[styles.aboutProject, { opacity: taglineOpacity }]}
+        >
+          Projeto sem fins lucrativos e acadêmico
+        </Animated.Text>
+
         <Animated.Text style={[styles.version, { opacity: taglineOpacity }]}>
           v1.0
         </Animated.Text>
@@ -166,5 +172,9 @@ const styles = StyleSheet.create({
     bottom: 40,
     fontSize: 12,
     color: "#a0bbb8",
+  },
+  aboutProject: {
+    color: "#a0bbb8",
+    fontWeight: "900",
   },
 });
