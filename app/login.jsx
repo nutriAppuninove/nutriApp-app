@@ -11,8 +11,9 @@ import {
 import { Stack, useRouter } from "expo-router";
 import { useAuth } from "./context/AuthContext";
 import { styles } from "./style/auth.style";
-import { API_URL } from "./constants/env";
 import { Ionicons } from "@expo/vector-icons";
+
+const VALID_DOMAINS = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com"];
 
 export default function Login() {
   const router = useRouter();
@@ -23,14 +24,6 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState(null);
   const [showSenha, setShowSenha] = useState(false);
-
-  const VALID_DOMAINS = [
-    "gmail.com",
-    "yahoo.com",
-    "hotmail.com",
-    "outlook.com",
-    "icloud.com",
-  ];
 
   const [emailErro, setEmailErro] = useState(null);
 
@@ -96,6 +89,7 @@ export default function Login() {
             <TextInput
               style={[styles.input, emailErro && { borderColor: "#ef4444" }]}
               placeholder="seu@email.com"
+              placeholderTextColor="#000000"
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
@@ -109,6 +103,7 @@ export default function Login() {
               <TextInput
                 style={styles.inputFlex}
                 placeholder="••••••••"
+                placeholderTextColor="#000000"
                 secureTextEntry={!showSenha}
                 value={senha}
                 onChangeText={setSenha}
