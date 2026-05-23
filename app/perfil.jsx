@@ -31,8 +31,6 @@ export default function Perfil() {
 
         const data = await res.json();
 
-        console.log("API data:", data);
-
         setPerfil({
           nome: data.nome,
           idade: data.idade,

@@ -21,7 +21,14 @@ export function AuthProvider({ children }) {
     return data;
   };
 
-  const register = async ({ nome, email, senha, idade }) => {
+  const register = async ({
+    nome,
+    email,
+    senha,
+    idade,
+    pesoAlvo,
+    pesoAtual,
+  }) => {
     const res = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -30,6 +37,8 @@ export function AuthProvider({ children }) {
         email,
         senha,
         idade: idade ? Number(idade) : undefined,
+        pesoAlvo: pesoAlvo ? Number(pesoAlvo) : undefined,
+        pesoAtual: pesoAtual ? Number(pesoAtual) : undefined,
       }),
     });
     if (!res.ok) {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
@@ -30,48 +30,32 @@ export default function Home() {
   const [erro, setErro] = useState(null);
   const [inputErros, setInputErros] = useState({});
 
-  useEffect(() => {
-    const erros = {};
+  console.log("User data:", API_URL);
 
-    const validar = (valor, campo) => {
-      if (!valor) return;
+  const validarCampo = (valor, campo) => {
+    if (!valor) return null;
 
-      const normalizado = String(valor).replace(",", ".");
-      const n = Number(normalizado);
+    const normalizado = String(valor).replace(",", ".");
+    const n = Number(normalizado);
 
-      if (isNaN(n) || n <= 0) {
-        erros[campo] = "Valor inválido";
-        return;
-      }
+    if (isNaN(n) || n <= 0) return "Valor inválido";
 
-      if (campo === "altura" && (n < 0.5 || n > 2.5)) {
-        erros[campo] = "Altura entre 0,5 e 2,5 m";
-        return;
-      }
+    if (campo === "altura" && (n < 0.5 || n > 2.5))
+      return "Altura entre 0,5 e 2,5 m";
+    if (campo === "peso" && (n < 10 || n > 300))
+      return "Peso entre 10 e 300 kg";
+    if (campo === "idade" && (n < 1 || n > 120))
+      return "Idade entre 1 e 120 anos";
+    if (campo === "frequencia" && (n < 1 || n > 7))
+      return "Frequência entre 1 e 7 dias";
 
-      if (campo === "peso" && (n < 10 || n > 300)) {
-        erros[campo] = "Peso entre 10 e 300 kg";
-        return;
-      }
+    return null;
+  };
 
-      if (campo === "idade" && (n < 1 || n > 120)) {
-        erros[campo] = "Idade entre 1 e 120 anos";
-        return;
-      }
-
-      if (campo === "frequencia" && (n < 1 || n > 7)) {
-        erros[campo] = "Frequência entre 1 e 7 dias";
-        return;
-      }
-    };
-
-    validar(form.peso, "peso");
-    validar(form.altura, "altura");
-    validar(form.idade, "idade");
-    validar(form.frequencia, "frequencia");
-
-    setInputErros(erros);
-  }, [form]);
+  const handleChange = (campo, valor) => {
+    setForm((prev) => ({ ...prev, [campo]: valor }));
+    setInputErros((prev) => ({ ...prev, [campo]: validarCampo(valor, campo) }));
+  };
 
   const parseNum = (val) => {
     const normalizado = String(val).replace(",", ".");
@@ -207,9 +191,10 @@ export default function Home() {
                       inputErros.peso && localStyles.inputError,
                     ]}
                     placeholder="Ex: 75.5"
+                    placeholderTextColor="#9ca3af"
                     keyboardType="numeric"
                     value={form.peso}
-                    onChangeText={(v) => setForm({ ...form, peso: v })}
+                    onChangeText={(v) => handleChange("peso", v)}
                   />
                   {inputErros.peso && (
                     <Text style={localStyles.erroInput}>{inputErros.peso}</Text>
@@ -223,9 +208,10 @@ export default function Home() {
                       inputErros.altura && localStyles.inputError,
                     ]}
                     placeholder="Ex: 1.75"
+                    placeholderTextColor="#9ca3af"
                     keyboardType="numeric"
                     value={form.altura}
-                    onChangeText={(v) => setForm({ ...form, altura: v })}
+                    onChangeText={(v) => handleChange("altura", v)}
                   />
                   {inputErros.altura && (
                     <Text style={localStyles.erroInput}>
@@ -244,9 +230,10 @@ export default function Home() {
                       inputErros.idade && localStyles.inputError,
                     ]}
                     placeholder="Ex: 25"
+                    placeholderTextColor="#9ca3af"
                     keyboardType="numeric"
                     value={form.idade}
-                    onChangeText={(v) => setForm({ ...form, idade: v })}
+                    onChangeText={(v) => handleChange("idade", v)}
                   />
                   {inputErros.idade && (
                     <Text style={localStyles.erroInput}>
@@ -262,9 +249,10 @@ export default function Home() {
                       inputErros.frequencia && localStyles.inputError,
                     ]}
                     placeholder="Ex: 3"
+                    placeholderTextColor="#9ca3af"
                     keyboardType="numeric"
                     value={form.frequencia}
-                    onChangeText={(v) => setForm({ ...form, frequencia: v })}
+                    onChangeText={(v) => handleChange("frequencia", v)}
                   />
                   {inputErros.frequencia && (
                     <Text style={localStyles.erroInput}>
@@ -308,6 +296,11 @@ export default function Home() {
                     {resultado.imc.classificacao}
                   </Text>
                 </Text>
+                {resultado.mensagem && (
+                  <Text style={styles.resultadoLinha}>
+                    💬 {resultado.mensagem}
+                  </Text>
+                )}
               </View>
             )}
           </ScrollView>
@@ -316,3 +309,15 @@ export default function Home() {
     </>
   );
 }
+
+const localStyles = StyleSheet.create({
+  inputError: {
+    borderColor: "#ef4444",
+    borderWidth: 1,
+  },
+  erroInput: {
+    color: "#ef4444",
+    fontSize: 11,
+    marginTop: 2,
+  },
+});
