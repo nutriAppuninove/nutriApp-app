@@ -104,13 +104,8 @@ export default function Home() {
         throw new Error(err.message || "Falha ao enviar os dados");
       }
 
-      const getRes = await fetch(`${API_URL}/result/get`);
-      if (!getRes.ok) {
-        const err = await getRes.json().catch(() => ({}));
-        throw new Error(err.message || "Falha ao obter o resultado");
-      }
-
-      const data = await getRes.json();
+      // resultado vem direto do POST agora
+      const data = await postRes.json();
       setResultado(data);
     } catch (e) {
       setErro(e.message || "Erro inesperado");
@@ -118,7 +113,6 @@ export default function Home() {
       setLoading(false);
     }
   };
-
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
