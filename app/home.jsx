@@ -30,6 +30,8 @@ export default function Home() {
   const [erro, setErro] = useState(null);
   const [inputErros, setInputErros] = useState({});
 
+  console.log("User data:", API_URL);
+
   const validarCampo = (valor, campo) => {
     if (!valor) return null;
 
@@ -294,6 +296,11 @@ export default function Home() {
                     {resultado.imc.classificacao}
                   </Text>
                 </Text>
+                {resultado.mensagem && (
+                  <Text style={styles.resultadoLinha}>
+                    💬 {resultado.mensagem}
+                  </Text>
+                )}
               </View>
             )}
           </ScrollView>

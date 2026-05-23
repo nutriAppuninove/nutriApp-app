@@ -1,0 +1,41 @@
+export default {
+  expo: {
+    name: "nutriApp-app",
+    slug: "nutriApp-app",
+    version: "1.0.0",
+    orientation: "portrait",
+    icon: "./assets/icon.png",
+    userInterfaceStyle: "light",
+    scheme: "nutri-app",
+    splash: {
+      image: "./assets/splash-icon.png",
+      resizeMode: "contain",
+      backgroundColor: "#ffffff",
+    },
+    ios: {
+      supportsTablet: true,
+    },
+    android: {
+      adaptiveIcon: {
+        backgroundColor: "#E6F4FE",
+        foregroundImage: "./assets/android-icon-foreground.png",
+        backgroundImage: "./assets/android-icon-background.png",
+        monochromeImage: "./assets/android-icon-monochrome.png",
+      },
+      package: "com.lucasoliveira04.nutriAppapp",
+    },
+    web: {
+      bundler: "metro",
+      favicon: "./assets/favicon.png",
+    },
+    plugins: ["expo-router"],
+    extra: {
+      apiUrl: process.env.EXPO_PUBLIC_API_URL,
+      apiKey: process.env.EXPO_PUBLIC_API_KEY,
+      router: {},
+      eas: {
+        projectId: "e8fdf92a-a5c9-4dfa-be43-f675a0d126c7",
+      },
+    },
+  },
+};

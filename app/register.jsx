@@ -22,6 +22,8 @@ export default function Register() {
     email: "",
     senha: "",
     idade: "",
+    pesoAlvo: "",
+    pesoAtual: "",
   });
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState(null);
@@ -35,6 +37,8 @@ export default function Register() {
         email: form.email.trim(),
         senha: form.senha,
         idade: form.idade,
+        pesoAlvo: form.pesoAlvo,
+        pesoAtual: form.pesoAtual,
       });
       router.replace("/home");
     } catch (e) {
@@ -88,18 +92,18 @@ export default function Register() {
                 value={form.email}
                 onChangeText={(v) => setForm({ ...form, email: v })}
               />
+              <View style={styles.col}>
+                <Text style={styles.label}>Senha</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="••••••••"
+                  secureTextEntry
+                  value={form.senha}
+                  onChangeText={(v) => setForm({ ...form, senha: v })}
+                />
+              </View>
 
               <View style={styles.row}>
-                <View style={styles.col}>
-                  <Text style={styles.label}>Senha</Text>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="••••••••"
-                    secureTextEntry
-                    value={form.senha}
-                    onChangeText={(v) => setForm({ ...form, senha: v })}
-                  />
-                </View>
                 <View style={styles.col}>
                   <Text style={styles.label}>Idade</Text>
                   <TextInput
@@ -108,6 +112,26 @@ export default function Register() {
                     keyboardType="numeric"
                     value={form.idade}
                     onChangeText={(v) => setForm({ ...form, idade: v })}
+                  />
+                </View>
+                <View style={styles.col}>
+                  <Text style={styles.label}>Peso Alvo</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Ex: 70"
+                    keyboardType="numeric"
+                    value={form.pesoAlvo}
+                    onChangeText={(v) => setForm({ ...form, pesoAlvo: v })}
+                  />
+                </View>
+                <View style={styles.col}>
+                  <Text style={styles.label}>Peso Atual</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Ex: 75"
+                    keyboardType="numeric"
+                    value={form.pesoAtual}
+                    onChangeText={(v) => setForm({ ...form, pesoAtual: v })}
                   />
                 </View>
               </View>
