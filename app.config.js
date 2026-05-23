@@ -30,8 +30,7 @@ export default {
     },
     plugins: ["expo-router"],
     extra: {
-      apiUrl: process.env.EXPO_PUBLIC_API_URL,
-      apiKey: process.env.EXPO_PUBLIC_API_KEY,
+      apiUrl: "https://nutriapp-api.devoliveira.com/api",
       router: {},
       eas: {
         projectId: "e8fdf92a-a5c9-4dfa-be43-f675a0d126c7",
