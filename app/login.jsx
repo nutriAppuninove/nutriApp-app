@@ -113,7 +113,7 @@ export default function Login() {
                 style={{ padding: 4 }}
               >
                 <Ionicons
-                  name={showSenha ? "eye-off-outline" : "eye-outline"}
+                  name={showSenha ? "eye-outline" : "eye-off-outline"}
                   size={20}
                   color="#888"
                 />
