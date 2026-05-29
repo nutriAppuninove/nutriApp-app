@@ -236,7 +236,7 @@ export default function Home() {
                   )}
                 </View>
                 <View style={styles.col}>
-                  <Text style={styles.label}>Frequência</Text>
+                  <Text style={styles.label}>Frequência (dias) </Text>
                   <TextInput
                     style={[
                       styles.input,
